@@ -5,7 +5,8 @@ export const connectSocket = () => {
     return socket;
   }
 
-  socket = new WebSocket("ws://localhost:5000/ws");
+  // socket = new WebSocket("ws://localhost:5000/ws");
+  socket = new WebSocket("https://my-chat-application-s56u.onrender.com/ws");
 
   socket.onopen = () => {
     console.log("🔥 Socket Connected");
