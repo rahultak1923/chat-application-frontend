@@ -15,7 +15,7 @@ function Chat() {
   useEffect(() => {
     if (!user?._id) return;
 
-    const socket = connectSocket();
+    const socket = connectSocket(user._id);
     
     const registerUser = () => {
       console.log("🚀 Sending registration for user:", user._id);

@@ -1,19 +1,22 @@
 let socket = null;
 
-export const connectSocket = () => {
+export const connectSocket = (userId = null) => {
+  // Agar socket pehle se open hai, toh naya connection mat banao
   if (socket && socket.readyState === WebSocket.OPEN) {
     return socket;
   }
 
-  // socket = new WebSocket("ws://localhost:5000/ws");
-  socket = new WebSocket("https://my-chat-application-s56u.onrender.com/ws");
+  // ✅ Production Live Secure URL (WSS)
+    // socket = new WebSocket("ws://localhost:5000/ws");
+
+  socket = new WebSocket("wss://my-chat-application-s56u.onrender.com/ws");
 
   socket.onopen = () => {
-    console.log("🔥 Socket Connected");
-  };
-
-  socket.onmessage = (event) => {
-    console.log("📩 Message received:", event.data);
+    console.log("🔥 Socket Connected Live");
+    // Registration payload tabhi bhejo jab userId mil jaye
+    if (userId) {
+      socket.send(JSON.stringify({ type: "register", userId }));
+    }
   };
 
   socket.onerror = (e) => {
@@ -21,8 +24,13 @@ export const connectSocket = () => {
   };
 
   socket.onclose = () => {
-    console.log("⚠️ Socket Closed");
+    console.log("⚠️ Socket Closed. Reconnecting in 3 seconds...");
     socket = null;
+    
+    // 🔄 Auto-Reconnect Engine: Agar user logged in hai, toh 3 seconds me loop back karo
+    if (userId) {
+      setTimeout(() => connectSocket(userId), 3000);
+    }
   };
 
   return socket;
